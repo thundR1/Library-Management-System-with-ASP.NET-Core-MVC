@@ -1,0 +1,59 @@
+﻿@model LibraryMangementSystem.Models.Loan
+
+
+@{
+    var dueDate = ViewBag.DueDate;
+}
+
+<h1>Add Return Date</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <p>Due Date: <strong>@dueDate.ToString("yyyy-MM-dd")</strong></p>
+        <form asp-action="Return">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <input type="hidden" asp-for="LoanID" value="@Model.LoanID" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ReturnDate" class="control-label"></label>
+                <input asp-for="ReturnDate" onchange="getCost()" id="ReturnDate" class="form-control" min="@Model.LoanDate.ToString("yyyy-MM-dd")"/>
+                <span asp-validation-for="ReturnDate" class="text-danger"></span>
+            </div>
+
+            <label asp-for="PenaltyCost" class="control-label">Penalty Cost: <span id="penaltyCost">0</span>$</label>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Add Return Date" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+
+    
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    function getCost() {
+        var returnDate = $('#ReturnDate').val();
+        var dueDate = '@dueDate';
+        $.ajax({
+            url: '@Url.Action("PenaltyCost", "Loans")',
+            type: 'POST',
+            data: { returnDate: returnDate, dueDate: dueDate },
+            success: function (response) {
+                $('#penaltyCost').text(response.penalty);
+            }
+        });
+    }
+</script>

@@ -1,0 +1,67 @@
+﻿@model LibraryMangementSystem.Models.Book
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Book</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Cover)
+        </dt>
+        <dt class="col-sm-10">
+            <img src="/Books/GetCover/@Model?.BookID" style="width:200px;height:200px" />
+        </dt>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ISBN)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ISBN)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Author)
+        </dt>
+        <dd class="col-sm-10">
+            @ViewBag.AuthorName
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Quantity)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Quantity)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class="col-sm-10">
+            <span>$</span>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Publisher)
+        </dt>
+        <dd class = "col-sm-10">
+            @ViewBag.PublisherName
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+        <dd class = "col-sm-10">
+            @ViewBag.CategoryName
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.BookID" class="btn btn-outline-primary">Edit</a> 
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+</div>

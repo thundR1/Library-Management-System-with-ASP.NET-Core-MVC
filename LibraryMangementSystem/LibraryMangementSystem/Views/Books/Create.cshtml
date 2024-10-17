@@ -1,0 +1,168 @@
+﻿@model LibraryMangementSystem.Models.Book
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Add New Book</h1>
+
+<h4>Book</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ISBN" class="control-label"></label>
+                <input asp-for="ISBN" class="form-control" />
+                <span asp-validation-for="ISBN" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="categorySearch">Category</label>
+                <input id="categorySearch" type="text" name="searchCategory" class="form-control">
+            </div>
+            <div class="form-group">
+                <div class="d-flex">
+                    <select id="categoryList" name="selectedCategory" class="form-control mt-2 me-2">
+                        <option value="">Select an option</option>
+                    </select>
+                    <a asp-controller="Categories" asp-action="Create" class="btn btn-sm btn-outline-secondary text-center mt-2 text-nowrap">Add New</a>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="publisherSearch">Publisher</label>
+                <input id="publisherSearch" type="text" name="searchPublisher" class="form-control">
+            </div>
+            <div class="form-group">
+                <div class="d-flex">
+                    <select id="publisherList" name="selectedPublisher" class="form-control mt-2 me-2">
+                        <option value="">Select an option</option>
+                    </select>
+                    <a asp-controller="Publishers" asp-action="Create" class="btn btn-sm btn-outline-secondary mt-2 text-nowrap">Add New</a>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="authorSearch">Author</label>
+                <input id="authorSearch" type="text" name="searchAuthor" class="form-control">
+            </div>
+            <div class="form-group">
+                <div class="d-flex">
+                    <select id="authorList" name="selectedAuthor" class="form-control mt-2 me-2">
+                        <option value="">Select an option</option>
+                    </select>
+                    <a asp-controller="Authors" asp-action="Create" aspr class="btn btn-sm btn-outline-secondary mt-2 text-nowrap">Add New</a>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-2">
+                <label asp-for="Cover" class="control-label"></label>
+                <input type="file" name="bookCover" accept="image/jpeg, image/png" />
+                <span asp-validation-for="Cover" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Add" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div>
+    
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#authorSearch').on('keyup', function () {
+            var searchAuthor = $(this).val();
+
+            if (searchAuthor.length >= 1) {
+                $.ajax({
+                    url: '@Url.Action("SearchAuthors", "Books")',
+                    data: { searchAuthor: searchAuthor },
+                    success: function (data) {
+                        var dropdown = $('#authorList');
+                        dropdown.empty();
+
+                        $.each(data, function (i, item) {
+                            dropdown.append($('<option>', { value: item.id, text: item.text }));
+                        });
+                    },
+                    error: function () {
+                        alert('Error occurred while searching.');
+                    }
+                });
+            }
+        });
+        $('#publisherSearch').on('keyup', function () {
+            var searchPublisher = $(this).val();
+
+            if (searchPublisher.length >= 1) {
+                $.ajax({
+                    url: '@Url.Action("SearchPublishers", "Books")',
+                    data: { searchPublisher: searchPublisher },
+                    success: function (data) {
+                        var dropdown = $('#publisherList');
+                        dropdown.empty();
+
+                        $.each(data, function (i, item) {
+                            dropdown.append($('<option>', { value: item.id, text: item.text }));
+                        });
+                    },
+                    error: function () {
+                        alert('Error occurred while searching.');
+                    }
+                });
+            }
+        });
+        $('#categorySearch').on('keyup', function () {
+            var searchCategory = $(this).val();
+
+            if (searchCategory.length >= 1) {
+                $.ajax({
+                    url: '@Url.Action("SearchCategories", "Books")',
+                    data: { searchCategory: searchCategory },
+                    success: function (data) {
+                        var dropdown = $('#categoryList');
+                        dropdown.empty();
+
+                        $.each(data, function (i, item) {
+                            dropdown.append($('<option>', { value: item.id, text: item.text }));
+                        });
+                    },
+                    error: function () {
+                        alert('Error occurred while searching.');
+                    }
+                });
+            }
+        });
+    });
+
+</script>

@@ -1,0 +1,92 @@
+﻿@model IEnumerable<LibraryMangementSystem.Models.Loan>
+
+@{
+    ViewData["Title"] = "MemberLoans";
+}
+
+<h1>@ViewBag.MemberName's Loans</h1>
+
+
+<table class="table table-striped text-center">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.LoanDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DueDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReturnDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Member)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.PenaltyCost)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Approved)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LoanDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DueDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReturnDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Book.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Member.Email)
+                </td>
+
+                <td>
+                    <span>$</span>
+                    @Html.DisplayFor(modelItem => item.PenaltyCost)
+
+                </td>
+                <td>
+                    @if (!item.Approved)
+                    {
+                        <a asp-action="ApproveLoan" asp-controller="Loans" asp-route-id="@item.LoanID" class="btn btn-sm btn-outline-success">Approve</a>
+                    }
+                    else
+                    {
+                        @(item.Approved ? "Approved" : "No")
+                        ;
+                    }
+                </td>
+
+                <td>
+                    @if (item.ReturnDate == null)
+                    {
+                        <a asp-action="Return" asp-controller="Loans" asp-route-id="@item.LoanID" class="btn btn-sm btn-outline-primary">Return</a>
+
+                    }
+                    else
+                    {
+                        <a asp-action="Return" asp-controller="Loans" asp-route-id="@item.LoanID" class="btn btn-sm btn-outline-primary disabled">Returned</a>
+                    }
+                    <a asp-action="Edit" asp-controller="Loans" asp-route-id="@item.LoanID" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-action="Delete" asp-controller="Loans" asp-route-id="@item.LoanID" class="btn btn-sm btn-outline-primary">Delete</a>
+                </td>
+            </tr> 
+        }
+    </tbody>
+</table>

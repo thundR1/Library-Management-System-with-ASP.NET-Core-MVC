@@ -1,0 +1,317 @@
+﻿@model IEnumerable<LibraryMangementSystem.Models.Loan>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Manage Loans</h1>
+
+<div class="container m-3">
+    <!-- Select Dropdown -->
+    <div class="form-group m-2">
+        <label for="searchSelect">Select a Search Option</label>
+        <select id="searchSelect" class="form-control">
+            <option value="" selected>Select a search option</option>
+            <option value="searchByTitle">Search by Title</option>
+            <option value="searchByMember">Search by Member</option>
+            <option value="searchByLoanDate">Search by Loan Date</option>
+            <option value="searchByDueDate">Search by Due Date</option>
+        </select>
+    </div>
+
+    <!-- Search by Title Form -->
+    <div id="searchByTitle" class="search-form" style="display: none;">
+        <form asp-action="SearchByTitle" method="get">
+            <div class="form-group">
+                <label for="title">Search by Title</label>
+                <input type="text" class="form-control" id="title" name="bookTitle" placeholder="Enter book title">
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Search</button>
+        </form>
+    </div>
+
+    <!-- Search by Member Form -->
+    <div id="searchByMember" class="search-form" style="display: none;">
+        <form asp-action="SearchByMember" method="get">
+            <div class="form-group">
+                <label for="member">Search by Member</label>
+                <input type="email" class="form-control" id="member" name="member" placeholder="Enter Email">
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Search</button>
+        </form>
+    </div>
+
+    <!-- Search by Loan Date Form -->
+    <div id="searchByLoanDate" class="search-form" style="display: none;">
+        <form asp-action="SearchByLoanDate" method="get">
+            <div class="form-group">
+                <label for="start">Start Date</label>
+                <input type="date" name="startdate" id="start" class="form-control" placeholder="Enter Start Date" />
+                <label for="end">End Date</label>
+                <input type="date" name="enddate" id="end" class="form-control" placeholder="Enter End Date" />
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Search</button>
+        </form>
+    </div>
+
+    <!-- Search by Due Date Form -->
+    <div id="searchByDueDate" class="search-form" style="display: none;">
+        <form asp-action="SearchByDueDate" method="get">
+            <div class="form-group">
+                <label for="start">Start Date</label>
+                <input type="date" name="startdate" id="start" class="form-control" placeholder="Enter Start Date" />
+                <label for="end">End Date</label>
+                <input type="date" name="enddate" id="end" class="form-control" placeholder="Enter End Date" />
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Search</button>
+        </form>
+    </div>
+</div>
+<!-- jQuery Script to Show/Hide Forms -->
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Hide all search forms initially
+            $('.search-form').hide();
+
+            // When the dropdown value changes, show the corresponding form
+            $('#searchSelect').on('change', function () {
+                var selectedValue = $(this).val();
+
+                // Hide all forms
+                $('.search-form').hide();
+
+                // Show the selected form
+                if (selectedValue !== "") {
+                    $('#' + selectedValue).show();
+                }
+            });
+        });
+    </script>
+}
+
+
+<br />
+<p>
+    <a asp-action="Create" class="btn btn-dark">Create New Loan</a>
+</p>
+<table class="table table-striped text-center">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.LoanDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DueDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReturnDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Member)
+            </th>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.PenaltyCost)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Approved)
+            </th>
+        
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.LoanDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DueDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReturnDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Book.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Member.Email)
+            </td>
+                
+            <td>
+                <span>$</span>
+                @Html.DisplayFor(modelItem => item.PenaltyCost)
+                
+            </td>
+            <td>
+                @if (!item.Approved)
+                {
+                    <a asp-action="ApproveLoan" asp-route-id="@item.LoanID" class="btn btn-sm btn-outline-success">Approve</a>
+                }
+                else
+                {
+                    @(item.Approved ? "Approved" : "No");
+                }
+            </td>
+            
+            <td>
+                    @if (item.ReturnDate == null)
+                    {
+                        <a asp-action="Return" asp-route-id="@item.LoanID" class="btn btn-sm btn-outline-primary">Return</a>
+
+                    }
+                    else
+                    {
+                        <a asp-action="Return" asp-route-id="@item.LoanID" class="btn btn-sm btn-outline-primary disabled">Returned</a>
+                    }
+                    <a asp-action="Edit" asp-route-id="@item.LoanID" class="btn btn-sm btn-outline-primary">Edit</a>  
+                    <a asp-action="Delete" asp-route-id="@item.LoanID" class="btn btn-sm btn-outline-primary">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-center">
+                @if (ViewBag.CurrentAction == "SearchByTitle")
+                {
+                    <ul class="pagination">
+
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("SearchByTitle", new { bookTitle = ViewBag.Search,page = ViewBag.CurrentPage - 1 })">Previous</a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item">
+                        <a class="page-link" href="@Url.Action("SearchByTitle", new { bookTitle = ViewBag.Search,page = i })">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <li class="page-item">
+                        <a class="page-link" href="@Url.Action("SearchByTitle", new { bookTitle = ViewBag.Search,page = ViewBag.CurrentPage + 1 })">Next</a>
+                            </li>
+                        }
+                    </ul>
+                }
+
+                else if (ViewBag.CurrentAction == "SearchByMember")
+
+                {
+                    <ul class="pagination">
+
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                        <a class="page-link" href="@Url.Action("SearchByMember", new { member = ViewBag.Search,page = ViewBag.CurrentPage - 1 })">Previous</a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item">
+                        <a class="page-link" href="@Url.Action("SearchByMember", new { member = ViewBag.Search,page = i })">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <li class="page-item">
+                        <a class="page-link" href="@Url.Action("SearchByMember", new { member = ViewBag.Search,page = ViewBag.CurrentPage + 1 })">Next</a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else if (ViewBag.CurrentAction == "SearchByLoanDate")
+                {
+                    <ul class="pagination">
+
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                        <a class="page-link" href="@Url.Action("SearchByLoanDate", new { startdate = ViewBag.Search,enddate = ViewBag.Search2,page = ViewBag.CurrentPage - 1 })">Previous</a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item">
+                        <a class="page-link" href="@Url.Action("SearchByLoanDate", new { startdate = ViewBag.Search,enddate = ViewBag.Search2,page = i })">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <li class="page-item">
+                        <a class="page-link" href="@Url.Action("SearchByLoanDate", new { startdate = ViewBag.Search,enddate = ViewBag.Search2,page = ViewBag.CurrentPage + 1 })">Next</a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else if (ViewBag.CurrentAction == "SearchByDueDate")
+                {
+                    <ul class="pagination">
+
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                        <a class="page-link" href="@Url.Action("SearchByDueDate", new { startdate = ViewBag.Search,enddate = ViewBag.Search2,page = ViewBag.CurrentPage - 1 })">Previous</a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item">
+                        <a class="page-link" href="@Url.Action("SearchByDueDate", new { startdate = ViewBag.Search,enddate = ViewBag.Search2,page = i })">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <li class="page-item">
+                        <a class="page-link" href="@Url.Action("SearchByDueDate", new { startdate = ViewBag.Search,enddate = ViewBag.Search2,page = ViewBag.CurrentPage + 1 })">Next</a>
+                            </li>
+                        }
+                    </ul>
+                }
+
+                
+                else
+                {
+                    <ul class="pagination">
+
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })">Previous</a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })">Next</a>
+                            </li>
+                        }
+                    </ul>
+                }
+
+</div>

@@ -1,0 +1,66 @@
+﻿@model LibraryMangementSystem.Models.Loan
+
+@{
+    ViewData["Title"] = "ApproveLoan";
+}
+
+<h1>ApproveLoan</h1>
+
+<div>
+    <h4>Loan</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LoanDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.LoanDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DueDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DueDate)
+        </dd>
+        
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LoanPeriod)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.LoanPeriod)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Approved)
+        </dt>
+        <dd class = "col-sm-10">
+            @(Model.Approved ? "Yes" : "No")
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Book)
+        </dt>
+        <dd class = "col-sm-10">
+            @ViewBag.Book
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Member)
+        </dt>
+        <dd class = "col-sm-10">
+            @ViewBag.Member
+        </dd>
+    </dl>
+    <form asp-action="LoanApproved" asp-route-id="@Model.LoanID">
+        <input type="hidden" asp-for="LoanID" />
+        @if (Model.Book.Quantity < 1)
+        {
+            <input type="submit" value="Approve" class="btn btn-success disabled" />
+            <span class="text-danger">This book is out of stock</span>
+        }
+        else
+        {
+            <input type="submit" value="Approve" class="btn btn-success" />
+        }
+         
+        <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+    </form>
+</div>
+

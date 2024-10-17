@@ -1,0 +1,124 @@
+﻿@model IEnumerable<UserRolesViewModel>
+
+<h2>Admin Dashboard</h2>
+
+<div class="container m-3">
+    <!-- Search by Email Form -->
+    <div class="search-form">
+        <form asp-action="SearchByEmail" method="get">
+            <div class="form-group">
+                <label for="email">Search by Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email">
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Search</button>
+        </form>
+    </div>
+ </div>
+
+<table class="table table-striped text-center">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@string.Join(", ", user.Roles)</td>
+                <td>
+                    @if (user.Roles.Contains("Admin"))
+                    {
+                        <p style="color: #b60000; font-weight: bold;">Site Admin</p>
+                    }
+                    else
+                    {
+                        if (!user.Roles.Contains("Librarian"))
+                        {
+                            <form asp-action="PromoteToAdmin" method="post">
+                                <input type="hidden" name="userId" value="@user.UserId" />
+                                <button type="submit" class="btn btn-sm btn-primary">Promote to Librarian</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="DemoteToMember" method="post">
+                                <input type="hidden" name="userId" value="@user.UserId" />
+                                <button type="submit" class="btn btn-sm btn-warning">Demote to Member</button>
+                            </form>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-center">
+    @if (ViewBag.CurrentAction == "SearchByEmail")
+
+    {
+        <ul class="pagination">
+
+            @if (ViewBag.CurrentPage > 1)
+
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("SearchByEmail", new { email = ViewBag.Search,page = ViewBag.CurrentPage - 1 })">Previous</a>
+                </li>
+            }
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("SearchByEmail", new { email = ViewBag.Search,page = i })">@i</a>
+                </li>
+            }
+
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("SearchByEmail", new { email = ViewBag.Search,page = ViewBag.CurrentPage + 1 })">Next</a>
+                </li>
+            }
+        </ul>
+    }
+    else
+
+    {
+        <ul class="pagination">
+
+            @if (ViewBag.CurrentPage > 1)
+
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Dashboard", new { page = ViewBag.CurrentPage - 1 })">Previous</a>
+                </li>
+            }
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Dashboard", new { page = i })">@i</a>
+                </li>
+            }
+
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Dashboard", new { page = ViewBag.CurrentPage + 1 })">Next</a>
+                </li>
+            }
+        </ul>
+    }
+
+</div>
+

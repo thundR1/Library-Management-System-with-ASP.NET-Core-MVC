@@ -1,0 +1,69 @@
+﻿@model IEnumerable<LibraryMangementSystem.Models.Loan>
+
+@{
+    ViewData["Title"] = "MyLoans";
+}
+
+<h1>My Loans</h1>
+
+<p>
+    <a asp-controller="BooksMember" asp-action="Index" class="btn btn-dark">New Loan</a>
+</p>
+<table class="table table-striped text-center">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.LoanDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DueDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReturnDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PenaltyCost)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Member)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Approved)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model)
+{
+            if (item.MemberID == ViewBag.MemberID)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LoanDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DueDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ReturnDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PenaltyCost)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Book.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Member.Email)
+                    </td>
+                    <td>
+                        @(item.Approved ? "Approved" : "Not Yet")
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

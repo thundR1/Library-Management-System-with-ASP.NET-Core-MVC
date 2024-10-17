@@ -1,0 +1,352 @@
+﻿@model IEnumerable<LibraryMangementSystem.Models.Book>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Borrow Books</h1>
+
+<div class="container m-3">
+    <!-- Select Dropdown -->
+    <div class="form-group m-2">
+        <label for="searchSelect">Select a Search Option</label>
+        <select id="searchSelect" class="form-control">
+            <option value="" selected>Select a search option</option>
+            <option value="searchByTitle">Search by Title</option>
+            <option value="searchByISBN">Search by ISBN</option>
+            <option value="searchByAuthor">Search by Author</option>
+            <option value="searchByCategory">Search by Category</option>
+            <option value="searchByPublisher">Search by Publisher</option>
+        </select>
+    </div>
+
+    <!-- Search by Title Form -->
+    <div id="searchByTitle" class="search-form" style="display: none;">
+        <form asp-action="SearchByTitle" method="get">
+            <div class="form-group">
+                <label for="title">Search by Title</label>
+                <input type="text" class="form-control" id="title" name="bookTitle" placeholder="Enter book title">
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Search</button>
+        </form>
+    </div>
+
+    <!-- Search by ISBN Form -->
+    <div id="searchByISBN" class="search-form" style="display: none;">
+        <form asp-action="SearchByISBN" method="get">
+            <div class="form-group">
+                <label for="isbn">Search by ISBN</label>
+                <input type="number" class="form-control" id="isbn" name="bookISBN" placeholder="Enter book ISBN">
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Search</button>
+        </form>
+    </div>
+
+    <!-- Search by Author Form -->
+    <div id="searchByAuthor" class="search-form" style="display: none;">
+        <form asp-action="SearchByAuthor" method="get">
+            <div class="form-group">
+                <label for="author">Search by Author</label>
+                <input type="text" class="form-control" id="author" name="bookAuthor" placeholder="Enter author's name">
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Search</button>
+        </form>
+    </div>
+
+    <!-- Search by Category Form -->
+    <div id="searchByCategory" class="search-form" style="display: none;">
+        <form asp-action="SearchByCat" method="get">
+            <div class="form-group">
+                <label for="category">Search by Category</label>
+                <input type="text" class="form-control" id="category" name="bookCat" placeholder="Enter Category">
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Search</button>
+        </form>
+    </div>
+
+    <!-- Search by Publisher Form -->
+    <div id="searchByPublisher" class="search-form" style="display: none;">
+        <form asp-action="SearchByPub" method="get">
+            <div class="form-group">
+                <label for="publisher">Search by Publisher</label>
+                <input type="text" class="form-control" id="publisher" name="bookPub" placeholder="Enter Publisher">
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Search</button>
+        </form>
+    </div>
+
+</div>
+
+<!-- jQuery Script to Show/Hide Forms -->
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.search-form').hide();
+
+            $('#searchSelect').on('change', function () {
+                var selectedValue = $(this).val();
+
+                $('.search-form').hide();
+
+                if (selectedValue !== "") {
+                    $('#' + selectedValue).show();
+                }
+            });
+        });
+    </script>
+}
+
+
+
+<div class="container">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-3">
+                <div class="card mb-4 card-hover" style="width: 100%;">
+                    <div class="card-body text-center">
+                        <img src="/BooksMember/GetCover/@item?.BookID" class="img-fluid" style="height:200px; width: 133px" />
+                        <div class="talk">@item?.Title</div>
+                        @if (item?.Quantity > 0)
+                        {
+                            <div>
+                                @Html.DisplayNameFor(modelitem => item.Price):
+                                <span>$</span>
+                                @Html.DisplayFor(modelitem => item.Price)
+                            </div>
+                            <a asp-action="Details" asp-route-id="@item.BookID" class="btn btn-outline-primary">Borrow</a>
+                        }
+
+                        else
+                        {
+                            <div>
+                                @Html.DisplayNameFor(modelitem => item.Price):
+                                <span>$</span>
+                                @Html.DisplayFor(modelitem => item.Price)
+                            </div>
+                            <span class="text-danger">out of stock</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@{
+    var currentUrl = Context.Request.QueryString.ToString();
+}
+        
+            <div class="d-flex justify-content-center">
+                @if (ViewBag.CurrentAction == "SearchByTitle")
+
+                {
+                    <ul class="pagination">
+
+                        @if (ViewBag.CurrentPage > 1)
+
+                        {
+                            <li class="page-item">
+                    <a class="page-link" href="@Url.Action("SearchByTitle", new { bookTitle = ViewBag.Search,page = ViewBag.CurrentPage - 1 })">Previous</a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+
+                        {
+                            <li class="page-item">
+                    <a class="page-link" href="@Url.Action("SearchByTitle", new { bookTitle = ViewBag.Search,page = i })">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+
+                        {
+                            <li class="page-item">
+                    <a class="page-link" href="@Url.Action("SearchByTitle", new { bookTitle = ViewBag.Search,page = ViewBag.CurrentPage + 1 })">Next</a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else if (ViewBag.CurrentAction == "SearchByISBN")
+                {
+                    <ul class="pagination">
+
+                        @if (ViewBag.CurrentPage > 1)
+
+
+
+                        {
+                            <li class="page-item">
+                    <a class="page-link" href="@Url.Action("SearchByISBN", new { bookISBN = ViewBag.Search,page = ViewBag.CurrentPage - 1 })">Previous</a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+
+
+
+                        {
+                            <li class="page-item">
+                    <a class="page-link" href="@Url.Action("SearchByISBN", new { bookISBN = ViewBag.Search,page = i })">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+
+
+
+                        {
+                            <li class="page-item">
+                    <a class="page-link" href="@Url.Action("SearchByISBN", new { bookISBN = ViewBag.Search,page = ViewBag.CurrentPage + 1 })">Next</a>
+                            </li>
+                        }
+                    </ul>
+                }
+
+                else if (ViewBag.CurrentAction == "SearchByAuthor")
+                {
+                    <ul class="pagination">
+
+                        @if (ViewBag.CurrentPage > 1)
+
+
+
+                        {
+                            <li class="page-item">
+                    <a class="page-link" href="@Url.Action("SearchByAuthor", new { bookAuthor = ViewBag.Search,page = ViewBag.CurrentPage - 1 })">Previous</a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+
+
+
+                        {
+                            <li class="page-item">
+                    <a class="page-link" href="@Url.Action("SearchByAuthor", new { bookAuthor = ViewBag.Search,page = i })">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+
+
+
+                        {
+                            <li class="page-item">
+                    <a class="page-link" href="@Url.Action("SearchByAuthor", new { bookAuthor = ViewBag.Search,page = ViewBag.CurrentPage + 1 })">Next</a>
+                            </li>
+                        }
+                    </ul>
+                }
+
+                else if (ViewBag.CurrentAction == "SearchByCat")
+                {
+                    <ul class="pagination">
+
+                        @if (ViewBag.CurrentPage > 1)
+
+
+
+                        {
+                            <li class="page-item">
+                    <a class="page-link" href="@Url.Action("SearchByCat", new { bookCat = ViewBag.Search,page = ViewBag.CurrentPage - 1 })">Previous</a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+
+
+
+                        {
+                            <li class="page-item">
+                    <a class="page-link" href="@Url.Action("SearchByCat", new { bookCat = ViewBag.Search,page = i })">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+
+
+
+                        {
+                            <li class="page-item">
+                    <a class="page-link" href="@Url.Action("SearchByCat", new { bookCat = ViewBag.Search,page = ViewBag.CurrentPage + 1 })">Next</a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else if (ViewBag.CurrentAction == "SearchByPub")
+                {
+                    <ul class="pagination">
+
+                        @if (ViewBag.CurrentPage > 1)
+
+
+
+                        {
+                            <li class="page-item">
+                    <a class="page-link" href="@Url.Action("SearchByPub", new { bookPub = ViewBag.Search,page = ViewBag.CurrentPage - 1 })">Previous</a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+
+
+
+                        {
+                            <li class="page-item">
+                    <a class="page-link" href="@Url.Action("SearchByPub", new { bookPub = ViewBag.Search,page = i })">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+
+
+
+                        {
+                            <li class="page-item">
+                    <a class="page-link" href="@Url.Action("SearchByPub", new { bookPub = ViewBag.Search,page = ViewBag.CurrentPage + 1 })">Next</a>
+                            </li>
+                        }
+                    </ul>
+                }
+               
+                else{
+                <ul class="pagination">
+
+                    @if (ViewBag.CurrentPage > 1)
+
+
+
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })">Previous</a>
+                        </li>
+                    }
+
+                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+
+
+
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                        </li>
+                    }
+
+                    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+
+
+
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })">Next</a>
+                        </li>
+                    }
+                </ul>
+                }
+
+        </div>
+
+
