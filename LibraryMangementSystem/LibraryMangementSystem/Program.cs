@@ -21,18 +21,18 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    try
-    {
-        var roleSeeder = scope.ServiceProvider.GetRequiredService<IRoleSeeder>();
-        await roleSeeder.SeedRolesAndAdminUserAsync();
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine(ex.Message);
-    }
-}
+// using (var scope = app.Services.CreateScope())
+// {
+//     try
+//     {
+//         var roleSeeder = scope.ServiceProvider.GetRequiredService<IRoleSeeder>();
+//         await roleSeeder.SeedRolesAndAdminUserAsync();
+//     }
+//     catch (Exception ex)
+//     {
+//         Console.WriteLine(ex.Message);
+//     }
+// }
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
