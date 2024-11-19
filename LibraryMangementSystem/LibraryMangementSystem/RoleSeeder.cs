@@ -25,7 +25,7 @@ namespace LibraryMangementSystem
             }
 
             var adminEmail = "adminZ@admin.com";
-            var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASS");
+            // var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASS");
             
             var adminUser = await _userManager.FindByEmailAsync(adminEmail);
             if (adminUser == null)
